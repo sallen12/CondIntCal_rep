@@ -37,13 +37,13 @@ get_ints <- function(mu, tau, alpha) {
   L_2 <- qnorm(alpha/2, mean = -mu, sd = 1)
   U_2 <- qnorm(1 - alpha/2, mean = -mu, sd = 1)
   r <- sample(c(0, 1), n, replace = T)
-  L_mi <- r*L_1+(1 - r)*L_2
-  U_mi <- r*U_1+(1 - r)*U_2
-  int_mi <<- cbind(L_mi,U_mi)
+  L_mi <- r*L_1 + (1 - r)*L_2
+  U_mi <- r*U_1 + (1 - r)*U_2
+  int_mi <<- cbind(L_mi, U_mi)
 }
 
 # function to get marginal coverage
-coverage <- function(y, int, closed = F) {
+coverage <- function(y, int, closed = T) {
   n <- length(y)
   if (n == 1) {
     if (!is.vector(int)) {
@@ -191,12 +191,12 @@ mcbdsc <- function(df_e, n_isolines = 10, colour_values = "black", colour_unc = 
     ggplot2::geom_abline(
       data = df_iso_abline,
       mapping = ggplot2::aes(intercept = .data$intercept, slope = .data$slope),
-      colour = "gray50"
+      colour = "gray"
     ) +
     geomtextpath::geom_labelabline(
       data = df_iso_abline,
       mapping = ggplot2::aes(intercept = .data$intercept, slope = .data$slope, label = .data$label),
-      colour = "gray50",
+      colour = "gray",
       hjust = 0.85,
       size = 7 * 0.36,
       text_only = TRUE,
