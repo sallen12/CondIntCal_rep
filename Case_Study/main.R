@@ -1,5 +1,5 @@
 ################################################################################
-########################## Case study (STAR dataset) ###########################
+################################# Case study ###################################
 ################################################################################
 
 ################################################################################
@@ -9,11 +9,14 @@ set.seed(789634)
 
 source("utility_funcs.R") # source functions and packages needed to evaluate interval forecasts
 
+# variable (one of "star", "bike", "facebook_1")
+var <- "bike"
+
 # read interval forecasts
-path <- "Case_Study/data/star/"
+path <- paste0("Case_Study/data/", var)
 file_list <- list.files(path = path, pattern = "\\.csv$", full.names = TRUE)
 data_list <- lapply(file_list, read.csv)
-names(data_list) <- c("CQRNet", "Net (L)", "Net", "QNet", "RF (L)", "RF", "Ridge (L)", "Ridge")
+names(data_list) <- c("CQRNet", "Net", "Net (L)", "QNet", "RF", "RF (L)", "Ridge", "Ridge (L)")
 data_list <- data_list[c("Ridge", "Ridge (L)", "RF", "RF (L)", "Net", "Net (L)", "CQRNet", "QNet")]
 
 # check observations are the same for all methods
@@ -55,7 +58,7 @@ len_rc_all <- sapply(data_list, ilength) # average length
 
 ##### display all values
 
-rbind(is_all, ocov_all, cov_all, len_all, ocov_rc_all, cov_rc_all, len_rc_all) |> t()
+rbind(is_all, comp_all, ocov_all, cov_all, len_all, ocov_rc_all, cov_rc_all, len_rc_all) |> t()
 
 
 ##### plot decomposition terms
@@ -64,6 +67,19 @@ dcmp_all <- sapply(idr_all, function(x) x$decomp) |> t() |> as.data.frame()
 dcmp_all$forecast <- names(data_list)
 dcmp_all
 
-mcbdsc(dcmp_all, MCB_lim = c(-0.001, 0.05), DSC_lim = c(-0.001, 0.02)) + ggtitle("STAR")
-ggsave("Figures/fig2_star.png", height = 3.2, width = 4.5)
+if (var == "star") {
+  MCB_lim <- c(-0.001, 0.08)
+  DSC_lim <- c(-0.001, 0.06)
+  tit <- "STAR"
+} else if (var == "bike") {
+  MCB_lim <- c(-0.001, 1)
+  DSC_lim <- c(-0.001, 3)
+  tit <- "Bike"
+} else if (var == "facebook_1") {
+  MCB_lim <- c(-0.001, 7)
+  DSC_lim <- c(-0.001, 12)
+  tit <- "Facebook"
+}
+mcbdsc(dcmp_all, MCB_lim = MCB_lim, DSC_lim = DSC_lim) + ggtitle(tit)
+ggsave(paste0("Figures/fig2_", var,".png"), height = 3.2, width = 4.5)
 
