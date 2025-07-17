@@ -7,21 +7,14 @@
 
 set.seed(1234)
 
-library(EnvStats)
-library(isodistrreg)
-library(scoringRules)
-library(calibrate)
-library(ggplot2)
-source("Sim_Study/utility_funcs.R")
+source("utility_funcs.R") # source functions and packages needed to evaluate interval forecasts
 
-n <- 1000
-alpha <- 0.1
+n <- 1000 # sample size
+alpha <- 0.1 # nominal coverage level
 
 tau <- sample(c(-1, 1), n, replace = T)
 mu <- rnorm(n)
-
 y <- rnorm(n, mean = mu, sd = 1) # simulate observations
-
 
 get_ints(mu, tau, alpha) # get interval forecasts
 

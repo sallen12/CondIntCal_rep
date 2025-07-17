@@ -1,4 +1,11 @@
 
+
+# necessary packages
+library(isodistrreg)
+library(scoringRules)
+library(ggplot2)
+
+
 # wrapper to get prediction intervals from the 6 forecast distributions
 get_ints <- function(mu, tau, alpha) {
   n <- length(mu)
@@ -74,9 +81,11 @@ ilength <- function(int) {
 
 # function to perform isotonic interval score decomposition
 is_decomp <- function(y, int, alpha, return_fit = T) {
-  int_df <- as.data.frame(int)
-  fit <- idr(y = y, X = int_df) # fit IDR
-  out <- predict(fit, int_df) # get predicted distributions
+
+  int <- data.frame(Lower = int[, 1], Upper = int[, 2])
+
+  fit <- idr(y = y, X = int) # fit IDR
+  out <- predict(fit, int) # get predicted distributions
 
   int_rc <- cbind(qpred(out, alpha/2), qpred(out, 1 - alpha/2)) # get recalibrated interval forecasts
   int_mg <- c(quantile(y, alpha/2, type = 1), quantile(y, 1 - alpha/2, type = 1)) # get unconditional interval forecasts
@@ -93,6 +102,23 @@ is_decomp <- function(y, int, alpha, return_fit = T) {
   } else {
     return(c("IS" = IS, "UNC" = IS_mg, "DSC" = DSC, "MCB" = MCB))
   }
+}
+
+# function to calculate the proportion of distinct intervals that are comparable
+count_comparables <- function(int) {
+
+  if (!is.data.frame(int)) int <- data.frame(Lower = int[, 1], Upper = int[, 2])
+
+  n <- nrow(int)
+
+  outL <- outer(int$Lower, int$Lower, "-") |> sign()
+  outU <- outer(int$Upper, int$Upper, "-") |> sign()
+  out <- outL + outU # negative or positive values are comparable, 0 values are not
+  out[outL == 0 & outU == 0] <- 1 # identical points are comparable
+
+  prop <- (sum(out != 0) - n) / (n*(n - 1)) # - n ignores the diagonal containing non-distinct pairs
+
+  return(prop)
 }
 
 # function to create MCB-DSC plot (adapted from triptych package)
