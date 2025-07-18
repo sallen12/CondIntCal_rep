@@ -10,7 +10,7 @@ set.seed(789634)
 source("utility_funcs.R") # source functions and packages needed to evaluate interval forecasts
 
 # variable (one of "star", "bike", "facebook_1")
-var <- "bike"
+var <- "facebook_1"
 
 # read interval forecasts
 path <- paste0("Case_Study/data/", var)
@@ -46,7 +46,7 @@ data_list_rc <- lapply(idr_all, function(x) {
 # assess original interval forecasts
 comp_all <- sapply(data_list, count_comparables) # percentage of distinct intervals that are comparable
 cov_all <- sapply(data_list, coverage, y = y) # unconditional coverage
-ocov_all <- sapply(data_list, coverage, y = y) # unconditional coverage of open interval forecasts
+ocov_all <- sapply(data_list, coverage, y = y, closed = F) # unconditional coverage of open interval forecasts
 len_all <- sapply(data_list, ilength) # average length
 
 # assess recalibrated interval forecasts
