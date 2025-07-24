@@ -204,20 +204,6 @@ mcbdsc <- function(df_e, n_isolines = 10, colour_values = "black", colour_unc = 
       size = 2,
       shape = 15
     ) +
-    geomtextpath::geom_labelabline(
-      mapping = ggplot2::aes(
-        intercept = 0,
-        slope = 1,
-        label = paste("UNC:", prettyNum(.data$UNC, digits = 3))
-      ),
-      data = df_e[1, ],
-      colour = colour_unc,
-      hjust = 0.85,
-      size = 7 * 0.36,
-      text_only = TRUE,
-      boxcolour = NA,
-      straight = TRUE
-    ) +
     ggplot2::geom_abline(
       data = df_iso_abline,
       mapping = ggplot2::aes(intercept = .data$intercept, slope = .data$slope),
@@ -227,6 +213,20 @@ mcbdsc <- function(df_e, n_isolines = 10, colour_values = "black", colour_unc = 
       data = df_iso_abline,
       mapping = ggplot2::aes(intercept = .data$intercept, slope = .data$slope, label = .data$label),
       colour = "gray",
+      hjust = 0.85,
+      size = 7 * 0.36,
+      text_only = TRUE,
+      boxcolour = NA,
+      straight = TRUE
+    ) +
+    geomtextpath::geom_labelabline(
+      mapping = ggplot2::aes(
+        intercept = 0,
+        slope = 1,
+        label = paste("UNC:", prettyNum(.data$UNC, digits = 3))
+      ),
+      data = df_e[1, ],
+      colour = colour_unc,
       hjust = 0.85,
       size = 7 * 0.36,
       text_only = TRUE,
