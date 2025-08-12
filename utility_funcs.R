@@ -49,7 +49,7 @@ get_ints <- function(mu, tau, alpha) {
   U_mi <- r*U_1 + (1 - r)*U_2
   int_mi <- data.frame(Lower = L_mi, Upper = U_mi)
 
-  return(list("Ideal" = int_id, "Uncon." = int_cl, "Unfoc." = int_un, "MB" = int_me, "SB" = int_si, "Mix" = int_mi))
+  return(list("Ideal" = int_id, "Uncon." = int_cl, "Unfoc." = int_un, "MB" = int_me, "SB" = int_si, "Mixed" = int_mi))
 }
 
 # function to get marginal coverage
@@ -87,15 +87,16 @@ is_decomp <- function(y, int, alpha, return_fit = T) {
 
   int <- data.frame(Lower = int[, 1], Upper = int[, 2])
 
-  fit <- idr(y = y, X = int) # fit IDR
-  out <- predict(fit, int) # get predicted distributions
+  idr_settings <- osqpSettings(verbose = F, eps_abs = 1e-10, eps_rel = 1e-5, max_iter=10000)
+  fit <- idr(y = y, X = int, pars = idr_settings) # fit IDR
+  out <- predict(fit) # get predicted distributions
 
   int_rc <- cbind(qpred(out, alpha/2), qpred(out, 1 - alpha/2)) # get recalibrated interval forecasts
   int_mg <- c(quantile(y, alpha/2, type = 1), quantile(y, 1 - alpha/2, type = 1)) # get unconditional interval forecasts
 
   IS <- ints_quantiles(y, int[, 1], int[, 2], 1 - alpha) |> mean() # interval score of original forecast
   IS_mg <- ints_quantiles(y, int_mg[1], int_mg[2], 1 - alpha) |> mean() # interval score of unconditional forecast
-  IS_rc <- ints_quantiles(y, int_rc[,1], int_rc[, 2], 1 - alpha) |> mean() # interval score of recalibrated forecast
+  IS_rc <- ints_quantiles(y, int_rc[, 1], int_rc[, 2], 1 - alpha) |> mean() # interval score of recalibrated forecast
 
   MCB <- IS - IS_rc # miscalibration
   DSC <- IS_mg - IS_rc # discrimination

@@ -39,7 +39,7 @@ len_all <- sapply(data_list, ilength) # average length
 is_all <- sapply(idr_all, function(x) x[['decomp']][1] |> unname()) # interval score
 cov_rc_all <- sapply(data_list_rc, coverage, y = y) # unconditional coverage
 ocov_rc_all <- sapply(data_list_rc, coverage, y = y, closed = F) # unconditional coverage of open interval forecasts
-len_rc_all <- sapply(data_list, ilength) # average length
+len_rc_all <- sapply(data_list_rc, ilength) # average length
 
 
 ##### display all values
