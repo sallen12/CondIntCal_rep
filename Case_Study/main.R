@@ -7,7 +7,8 @@
 
 set.seed(789634)
 
-source("utility_funcs.R") # source functions and packages needed to evaluate interval forecasts
+#devtools::install_github("sallen12/CondIntCal")
+library(CondIntCal)
 
 # variable (one of "star", "bike", "facebook_1")
 var <- "star"
@@ -22,6 +23,7 @@ data_list <- data_list[c("Ridge", "Ridge (L)", "RF", "RF (L)", "Net", "Net (L)",
 # check observations are the same for all methods
 y <- data_list[[1]]$Obs
 sapply(data_list, function(df) all.equal(y, df$Obs)) |> all()
+data_list <- lapply(data_list, function(x) {x$Obs <- NULL; x})
 
 alpha <- 0.1 # nominal coverage level
 
@@ -30,7 +32,7 @@ alpha <- 0.1 # nominal coverage level
 ## IDR
 
 # recalibrate interval forecasts using IDR
-idr_all <- lapply(data_list, is_decomp, y = y, alpha = alpha)
+idr_all <- lapply(data_list, is_decomp, y = y, level = 1 - alpha, return_fit = T)
 
 # store recalibrated intervals in list
 data_list_rc <- lapply(idr_all, function(x) x[["int_rc"]])
@@ -76,6 +78,6 @@ if (var == "star") {
   DSC_lim <- c(-0.001, 12)
   tit <- "Facebook"
 }
-mcbdsc(dcmp_all, MCB_lim = MCB_lim, DSC_lim = DSC_lim) + ggtitle(tit) + theme(aspect.ratio = 1)
-ggsave(paste0("Figures/fig2_", var,".png"), height = 4, width = 4)
+plot_mcbdsc(dcmp_all, MCB_lim = MCB_lim, DSC_lim = DSC_lim) + ggplot2::ggtitle(tit) + ggplot2::theme(aspect.ratio = 1)
+ggplot2::ggsave(paste0("Figures/fig2_", var,".png"), height = 4, width = 4)
 
