@@ -11,7 +11,7 @@ set.seed(789634)
 library(CondIntCal)
 
 # variable (one of "star", "bike", "facebook_1")
-var <- "star"
+var <- "bike"
 
 # read interval forecasts
 path <- paste0("Case_Study/data/", var)
@@ -32,7 +32,7 @@ alpha <- 0.1 # nominal coverage level
 ## IDR
 
 # recalibrate interval forecasts using IDR
-idr_all <- lapply(data_list, is_decomp, y = y, level = 1 - alpha, return_fit = T)
+idr_all <- lapply(data_list, is_decomp, y = y, level = 1 - alpha, method = "isotonic", return_fit = T)
 
 # store recalibrated intervals in list
 data_list_rc <- lapply(idr_all, function(x) x[["int_rc"]])
@@ -43,20 +43,20 @@ data_list_rc <- lapply(idr_all, function(x) x[["int_rc"]])
 
 # assess original interval forecasts
 comp_all <- sapply(data_list, count_comparables) # percentage of distinct intervals that are comparable
-cov_all <- sapply(data_list, coverage, y = y) # unconditional coverage
-ocov_all <- sapply(data_list, coverage, y = y, closed = F) # unconditional coverage of open interval forecasts
+cov_all <- sapply(data_list, coverage, y = y, twosided = T) # unconditional coverage
+ocov_all <- sapply(data_list, coverage, y = y, closed = F, twosided = T) # unconditional coverage of open interval forecasts
 len_all <- sapply(data_list, ilength) # average length
 
 # assess recalibrated interval forecasts
 is_all <- sapply(idr_all, function(x) x[['decomp']][1] |> unname()) # interval score
-cov_rc_all <- sapply(data_list_rc, coverage, y = y) # unconditional coverage
-ocov_rc_all <- sapply(data_list_rc, coverage, y = y, closed = F) # unconditional coverage of open interval forecasts
+cov_rc_all <- sapply(data_list_rc, coverage, y = y, twosided = T) # unconditional coverage
+ocov_rc_all <- sapply(data_list_rc, coverage, y = y, closed = F, twosided = T) # unconditional coverage of open interval forecasts
 len_rc_all <- sapply(data_list_rc, ilength) # average length
 
 
 ##### display all values
 
-rbind(comp_all*100, is_all, cov_all, len_all, ocov_rc_all, cov_rc_all, len_rc_all) |> t() |> round(2)
+rbind(comp = comp_all*100, int_sc = is_all, cov_all, len_og = len_all, cov_rc_all, ocov_rc_all, len_rc = len_rc_all) |> t() |> round(2)
 
 
 ##### plot decomposition terms
