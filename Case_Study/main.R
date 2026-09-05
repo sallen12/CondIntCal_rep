@@ -63,7 +63,6 @@ rbind(comp = comp_all*100, int_sc = is_all, cov_all, len_og = len_all, cov_rc_al
 
 dcmp_all <- sapply(idr_all, function(x) x$decomp) |> t() |> as.data.frame()
 dcmp_all$forecast <- rownames(dcmp_all)
-dcmp_all
 
 if (var == "star") {
   MCB_lim <- c(-0.001, 0.08)
