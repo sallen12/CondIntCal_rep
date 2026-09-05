@@ -1,13 +1,17 @@
-# CondIntCal
+# CondIntCal (replication material)
 
-This repository contains R code to reproduce the results presented in the pre-print  
+This repository contains `R` code to reproduce the results in the pre-print  
 
 > S. Allen, J. Burnello, and J. Ziegel (2025). 
 > Assessing the conditional calibration of interval forecasts using decompositions of the interval score.
+> ArXiv preprint [arXiv:2508.18034](https://arxiv.org/abs/2508.18034).
+
+The methods developed in this paper are available in the more general `CondIntCal` package at https://github.com/sallen12/CondIntCal.
+
 
 ## Conditional calibration of interval forecasts
 
-This paper concerns calibration of forecasts in the form of central prediction intervals. 
+The above paper concerns calibration of forecasts in the form of central prediction intervals. 
 
 The calibration of interval forecasts is typically assessed by checking whether the outcome falls within the interval with the nominal coverage probability. However, this is typically assessed unconditionally, therefore neglecting conditional biases that may be present in the forecast. This work introduces a conditional decomposition of the interval score that provides a measure of conditional calibration of interval forecasts. 
 
