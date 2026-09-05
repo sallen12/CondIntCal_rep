@@ -55,5 +55,5 @@ dcmp_all <- sapply(idr_all, function(x) x[['decomp']]) |> t() |> as.data.frame()
 dcmp_all$forecast <- rownames(dcmp_all)
 
 plot_mcbdsc(dcmp_all, MCB_lim = c(-0.01, 9), DSC_lim = c(-0.01, 2.5)) + ggplot2::ggtitle(bquote(alpha == .(alpha)))
-ggplot2::ggsave(paste0("Figures/fig1_", 100*(1 - alpha), ".png"), height = 3.2, width = 4.5)
+ggplot2::ggsave(paste0("Figures/fig1_", 100*(1 - alpha), ".jpg"), height = 3.2, width = 4.5)
 

@@ -11,7 +11,7 @@ set.seed(789634)
 library(CondIntCal)
 
 # variable (one of "star", "bike", "facebook_1")
-var <- "bike"
+var <- "star"
 
 # read interval forecasts
 path <- paste0("Case_Study/data/", var)
@@ -78,5 +78,5 @@ if (var == "star") {
   tit <- "Facebook"
 }
 plot_mcbdsc(dcmp_all, MCB_lim = MCB_lim, DSC_lim = DSC_lim) + ggplot2::ggtitle(tit) + ggplot2::theme(aspect.ratio = 1)
-ggplot2::ggsave(paste0("Figures/fig2_", var,".png"), height = 4, width = 4)
+ggplot2::ggsave(paste0("Figures/fig2_", var,".jpg"), height = 4, width = 4)
 
